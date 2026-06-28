@@ -10,14 +10,47 @@ const FREQ_STYLES = {
 }
 
 function exportCSV(rules) {
-  const headers = ['id','return_name','applicable_classification','applicable_layer','frequency','due_days_after_period_end','submission_portal','legal_source','clause','regulator']
-  const rows = rules.map(r => headers.map(h => {
-    const v = r[h]
-    return `"${Array.isArray(v) ? v.join('; ') : v ?? ''}"`
-  }).join(','))
-  const blob = new Blob([[headers.join(','), ...rows].join('\n')], { type: 'text/csv' })
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob)
-  a.download = 'compliance_matrix.csv'; a.click()
+  const today = new Date().toISOString().slice(0, 10)
+
+  const columns = [
+    { key: 'id',                    label: 'Rule ID' },
+    { key: 'return_name',           label: 'Return Name' },
+    { key: 'frequency',             label: 'Frequency' },
+    { key: 'rule_type',             label: 'Rule Type' },
+    { key: 'offset_days',           label: 'Offset Days' },
+    { key: 'due_basis',             label: 'Due Date Basis' },
+    { key: 'applicable_classification', label: 'Applicable Classifications' },
+    { key: 'applicable_layer',      label: 'Applicable Layers' },
+    { key: 'recipient_type',        label: 'Recipient Type' },
+    { key: 'submission_portal',     label: 'Submission Portal' },
+    { key: 'portal_url',            label: 'Portal URL' },
+    { key: 'legal_source',          label: 'Legal Source (RBI Direction)' },
+    { key: 'clause',                label: 'Clause / Para' },
+    { key: 'regulator',             label: 'Regulator' },
+  ]
+
+  const escape = (v) => {
+    if (v === null || v === undefined) return '""'
+    const str = Array.isArray(v) ? v.join('; ') : String(v)
+    return `"${str.replace(/"/g, '""')}"`
+  }
+
+  const header  = columns.map(c => escape(c.label)).join(',')
+  const rows    = rules.map(r => columns.map(c => escape(r[c.key])).join(','))
+  const content = [
+    `"Comply.AI — Regulatory Obligation Matrix"`,
+    `"Exported: ${today} | Source: RBI Master Directions (Post Nov 2025) | Total Rules: ${rules.length}"`,
+    '',
+    header,
+    ...rows
+  ].join('\n')
+
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = `comply_ai_matrix_${today}.csv`
+  a.click()
+  URL.revokeObjectURL(a.href)
 }
 
 export default function Matrix() {

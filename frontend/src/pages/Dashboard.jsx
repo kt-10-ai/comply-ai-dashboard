@@ -84,8 +84,10 @@ export default function Dashboard() {
   const dueSoon  = calendar.filter(r => r.status === 'DUE SOON').length
   const offices  = Object.keys(stats.by_regional_office || {}).length
 
-  // Next 6 deadlines sorted by due date
-  const upcoming = [...calendar].sort((a, b) => a.due_date.localeCompare(b.due_date)).slice(0, 6)
+  const upcoming = [...calendar]
+    .filter(r => r.due_date !== null)
+    .sort((a, b) => (a.due_date || '').localeCompare(b.due_date || ''))
+    .slice(0, 6)
 
   return (
     <div className="space-y-6 animate-fade-in">

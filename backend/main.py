@@ -125,7 +125,7 @@ def get_calendar_overview(classification: str = Query(None), layer: str = Query(
     Returns all compliance deadlines computed from today's date.
     Used by the calendar page and dashboard upcoming table.
     """
-    from calendar_engine import compute_due, resolve_recipient
+    from calendar_engine import calculate_due_date
     today = date.today()
 
     results = []
@@ -134,12 +134,12 @@ def get_calendar_overview(classification: str = Query(None), layer: str = Query(
             continue
         if layer and layer not in rule["applicable_layer"]:
             continue
-        due_info = compute_due(rule, today)
+        due_info = calculate_due_date(rule, today)
         results.append({
             **rule,
             **due_info,
-            "reports_to": rule["submission_portal"],  # generic — no specific NBFC here
+            "reports_to": rule["submission_portal"],
         })
 
-    results.sort(key=lambda x: x["due_date"])
+    results.sort(key=lambda x: (x["due_date"] or "9999-99-99"))
     return results
