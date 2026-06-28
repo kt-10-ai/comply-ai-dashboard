@@ -1,0 +1,208 @@
+{
+    "compliance_framework": {
+        "version": "1.0.0",
+        "last_updated": "2026-06-29",
+        "jurisdiction": "Reserve Bank of India (RBI)",
+        "description": "Scale-Based Regulation (SBR) compliance guidelines and requirements for Non-Banking Financial Companies (NBFCs).",
+        "classifications": {
+            "ICC": {
+                "name": "Investment and Credit Company",
+                "min_net_owned_fund_cr": 10.0,
+                "accepts_public_deposits_allowed": true,
+                "description": "Any company which is a financial institution carrying on as its principal business- asset finance, providing finance whether by making loans or advances or otherwise for any activity other than its own and the acquisition of securities."
+            },
+            "Type-I": {
+                "name": "Type-I NBFC",
+                "min_net_owned_fund_cr": 2.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "NBFCs which do not accept/hold public funds and do not have customer interface."
+            },
+            "MFI": {
+                "name": "Micro Finance Institution",
+                "min_net_owned_fund_cr": 10.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "Non-deposit taking NBFC having not less than 85% of its assets in the nature of qualifying assets, which satisfy the criteria laid down by RBI."
+            },
+            "HFC": {
+                "name": "Housing Finance Company",
+                "min_net_owned_fund_cr": 20.0,
+                "accepts_public_deposits_allowed": true,
+                "description": "A financial institution carrying on as its principal business the providing of finance, whether directly or indirectly, for acquisition or construction of houses."
+            },
+            "CIC": {
+                "name": "Core Investment Company",
+                "min_net_owned_fund_cr": 100.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "Non-Banking Financial Company carrying on the business of acquisition of shares and securities."
+            },
+            "P2P": {
+                "name": "Peer-to-Peer Lending Platform",
+                "min_net_owned_fund_cr": 2.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "An intermediary providing the services of a peer-to-peer lending platform."
+            },
+            "AA": {
+                "name": "Account Aggregator",
+                "min_net_owned_fund_cr": 2.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "An entity retrieving or collecting financial information pertaining to a customer and consolidating it."
+            },
+            "Factor": {
+                "name": "NBFC-Factor",
+                "min_net_owned_fund_cr": 10.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "Non-deposit taking NBFC carrying on factoring business as its principal business."
+            },
+            "IFC": {
+                "name": "Infrastructure Finance Company",
+                "min_net_owned_fund_cr": 300.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "Non-deposit taking NBFC which deploys at least 74% of its total assets in infrastructure loans."
+            },
+            "PD": {
+                "name": "Primary Dealer",
+                "min_net_owned_fund_cr": 150.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "Standalone Primary Dealers (SPDs) registered with RBI to deal in government securities."
+            },
+            "IDF": {
+                "name": "Infrastructure Debt Fund",
+                "min_net_owned_fund_cr": 300.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "A non-deposit taking NBFC that facilitates the flow of long-term debt into infrastructure projects."
+            },
+            "NOFHC": {
+                "name": "Non-Operative Financial Holding Company",
+                "min_net_owned_fund_cr": 500.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "Financial holding company registered as an NBFC through which promoter / promoter groups will be permitted to set up a new bank."
+            },
+            "MGC": {
+                "name": "Mortgage Guarantee Company",
+                "min_net_owned_fund_cr": 100.0,
+                "accepts_public_deposits_allowed": false,
+                "description": "Company where at least 90% of business turnover is mortgage guarantee business or at least 90% of gross income is from mortgage guarantee business."
+            }
+        },
+        "scale_based_layers": {
+            "Base": {
+                "description": "Consists of non-deposit taking NBFCs below the asset size of ₹1000 crore, and specific categories like NBFC-P2P, NBFC-AA, NOFHC, and Type-I NBFCs.",
+                "crar_minimum_percent": 15.0,
+                "tier_i_minimum_percent": 10.0,
+                "leverage_ratio_max": 7.0,
+                "net_owned_fund_glide_path": {
+                    "current_cr": 5.0,
+                    "target_cr": 10.0,
+                    "deadline": "2027-03-31"
+                }
+            },
+            "Middle": {
+                "description": "Consists of deposit-taking NBFCs (irrespective of asset size), non-deposit taking NBFCs with asset size of ₹1000 crore and above, and special categories like HFC, IFC, IDF, CIC, and SPDs.",
+                "crar_minimum_percent": 15.0,
+                "tier_i_minimum_percent": 10.0,
+                "leverage_ratio_max": 7.0,
+                "net_owned_fund_glide_path": null
+            },
+            "Upper": {
+                "description": "Consists of those NBFCs which are specifically identified by the RBI as warranting enhanced regulatory requirement based on a set of parameters and scoring methodology.",
+                "crar_minimum_percent": 15.0,
+                "tier_i_minimum_percent": 11.5,
+                "leverage_ratio_max": 5.0,
+                "net_owned_fund_glide_path": null
+            },
+            "Top": {
+                "description": "This layer will remain empty unless the RBI is of the opinion that there is a significant increase in the systemic risk of a specific NBFC in the Upper Layer, moving it to the Top Layer.",
+                "crar_minimum_percent": 15.0,
+                "tier_i_minimum_percent": 12.0,
+                "leverage_ratio_max": 4.5,
+                "net_owned_fund_glide_path": null
+            }
+        },
+        "periodic_filings": {
+            "monthly": [
+                {
+                    "code": "NBS-ALM-1",
+                    "name": "Short-term Dynamic Liquidity Statement",
+                    "due_days_after_end": 15,
+                    "applicability": "NBFCs with asset size >= ₹100 crore or accepting deposits"
+                },
+                {
+                    "code": "CIC-Report",
+                    "name": "Credit Information Company Reporting",
+                    "due_days_after_end": 7,
+                    "applicability": "All lending NBFCs"
+                }
+            ],
+            "quarterly": [
+                {
+                    "code": "DNBS-01",
+                    "name": "Financial Indicators Return",
+                    "due_days_after_end": 15,
+                    "applicability": "Middle and Upper Layer NBFCs"
+                },
+                {
+                    "code": "DNBS-02",
+                    "name": "Prudential Norms Return",
+                    "due_days_after_end": 15,
+                    "applicability": "Middle and Upper Layer NBFCs"
+                },
+                {
+                    "code": "DNBS-03",
+                    "name": "Capital Adequacy Return",
+                    "due_days_after_end": 15,
+                    "applicability": "Middle and Upper Layer NBFCs"
+                },
+                {
+                    "code": "NBS-ALM-2 & NBS-ALM-3",
+                    "name": "Structural Liquidity & Interest Rate Sensitivity",
+                    "due_days_after_end": 15,
+                    "applicability": "NBFCs with asset size >= ₹100 crore or accepting deposits"
+                }
+            ],
+            "annual": [
+                {
+                    "code": "NBS-9",
+                    "name": "Active / Non-Deposit Taking Return (Capital Adequacy & NOF)",
+                    "due_days_after_end": 60,
+                    "applicability": "Base Layer NBFCs with asset size < ₹100 crore"
+                },
+                {
+                    "code": "NBS-7",
+                    "name": "Annual Return on Deposits",
+                    "due_days_after_end": 15,
+                    "applicability": "All Deposit Taking NBFCs"
+                },
+                {
+                    "code": "Auditor-Certificate",
+                    "name": "Statutory Auditor's Certificate (SAC)",
+                    "due_days_after_end": 30,
+                    "applicability": "All registered NBFCs"
+                }
+            ]
+        },
+        "general_mandates": {
+            "fair_practice_code": {
+                "required": true,
+                "board_approved": true,
+                "languages": [
+                    "English",
+                    "Vernacular / Regional Language"
+                ],
+                "description": "A set of guidelines that NBFCs must follow in their dealings with customers, ensuring transparency and ethical lending."
+            },
+            "grievance_redressal": {
+                "officer_designated": true,
+                "escalation_matrix_published": true,
+                "max_resolution_days": 30,
+                "ombudsman_applicable": "For NBFCs with customer interface and asset size >= ₹100 crore"
+            },
+            "kyc_aml_policy": {
+                "required": true,
+                "regulatory_act": "Prevention of Money Laundering Act (PMLA), 2002",
+                "reverification_cycle_high_risk_years": 2,
+                "reverification_cycle_medium_risk_years": 8,
+                "reverification_cycle_low_risk_years": 10
+            }
+        }
+    }
+}

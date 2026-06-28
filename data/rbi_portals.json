@@ -1,0 +1,57 @@
+{
+  "XBRL": {
+    "full_name": "RBI XBRL / CIMS Reporting Portal",
+    "short_name": "RBI CIMS",
+    "url": "https://cims.rbi.org.in/",
+    "fallback_url": "https://xbrl.rbi.org.in/",
+    "note": "RBI is migrating NBFC returns from legacy XBRL to CIMS (Centralised Information Management System). Use CIMS for all new filings.",
+    "access": "Requires RBI-issued Super User credentials",
+    "managed_by": "Reserve Bank of India – DNBS",
+    "used_for": ["NBS-1","NBS-2","NBS-4","NBS-6","NBS-7","ALM-1","ALM-2","CAP-ADQ","IRACP","CIC-ND","P2P-QR","AA-QR"]
+  },
+  "COSMOS": {
+    "full_name": "RBI COSMOS Portal",
+    "short_name": "RBI COSMOS",
+    "url": "https://cosmos.rbi.org.in/",
+    "note": "Used for document submissions to RBI Regional Offices. Requires login.",
+    "access": "Requires RBI-issued entity login credentials",
+    "managed_by": "Reserve Bank of India",
+    "used_for": ["AUD-ACC","GOV-ANN"]
+  },
+  "CRILC": {
+    "full_name": "Central Repository of Information on Large Credits",
+    "short_name": "CRILC Portal",
+    "url": "https://cims.rbi.org.in/",
+    "note": "CRILC reporting is done via CIMS. Requires RBI-issued credentials.",
+    "access": "Requires RBI-issued credentials",
+    "managed_by": "Reserve Bank of India – DNBS",
+    "used_for": ["CRILC"]
+  },
+  "FIU-IND": {
+    "full_name": "FIU-IND FINNET 2.0",
+    "short_name": "FIU-IND",
+    "url": "https://fiuindia.gov.in/",
+    "note": "Portal for CTR and STR submissions under PMLA. Publicly accessible login page.",
+    "access": "Requires FIU registration and entity login",
+    "managed_by": "Financial Intelligence Unit – India (Ministry of Finance)",
+    "used_for": ["FIU-CTR","FIU-STR"]
+  },
+  "CKYC": {
+    "full_name": "CKYC Registry – CERSAI",
+    "short_name": "CKYC India",
+    "url": "https://www.ckycindia.in/ckyc/index.php",
+    "note": "Official Central KYC Registry. NBFCs must register as Reporting Entities before uploading KYC records.",
+    "access": "Requires CERSAI registration and separate live credentials",
+    "managed_by": "CERSAI (Central Registry of Securitisation)",
+    "used_for": ["KYC-REV"]
+  },
+  "CIBIL": {
+    "full_name": "TransUnion CIBIL – Lender Login",
+    "short_name": "CIBIL",
+    "url": "https://myscore.cibil.com/CreditView/member-login.page",
+    "note": "NBFCs report monthly credit data to all 4 CICs: CIBIL, Equifax, Experian, CRIF Highmark.",
+    "access": "Requires CIC member registration",
+    "managed_by": "TransUnion CIBIL Ltd",
+    "used_for": ["CIR-RPT"]
+  }
+}
