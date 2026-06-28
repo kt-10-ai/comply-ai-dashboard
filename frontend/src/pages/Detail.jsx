@@ -235,18 +235,24 @@ export default function Detail() {
                         </td>
                         <td className="table-cell font-mono text-xs text-subtext">{entry.period_label}</td>
                         <td className="table-cell">
-                          <span className={`font-mono text-xs font-semibold ${entry.status === 'OVERDUE' ? 'text-red-700' : 'text-text'}`}>
-                            {format(parseISO(entry.due_date), 'd MMM yyyy')}
-                          </span>
-                          {entry.status === 'OVERDUE' && (
-                            <p className="text-[10px] text-red-500 mt-0.5">
-                              {Math.abs(entry.days_delta)}d ago
-                            </p>
-                          )}
-                          {entry.status === 'DUE SOON' && (
-                            <p className="text-[10px] text-orange-500 mt-0.5">
-                              in {entry.days_delta}d
-                            </p>
+                          {entry.due_date ? (
+                            <>
+                              <span className={`font-mono text-xs font-semibold ${entry.status === 'OVERDUE' ? 'text-red-700' : 'text-text'}`}>
+                                {format(parseISO(entry.due_date), 'd MMM yyyy')}
+                              </span>
+                              {entry.status === 'OVERDUE' && (
+                                <p className="text-[10px] text-red-500 mt-0.5">
+                                  {Math.abs(entry.days_delta)}d ago
+                                </p>
+                              )}
+                              {entry.status === 'DUE SOON' && (
+                                <p className="text-[10px] text-orange-500 mt-0.5">
+                                  in {entry.days_delta}d
+                                </p>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-xs text-subtext italic">On Occurrence</span>
                           )}
                         </td>
                         <td className="table-cell">
@@ -258,7 +264,7 @@ export default function Detail() {
                           <StatusBadge status={rowStatus} />
                           {filed && filingRec?.filed_date && (
                             <p className="text-[10px] text-success mt-0.5 font-medium">
-                              {format(new Date(filingRec.filed_date), 'd MMM yyyy')}
+                              {format(new Date(filingRec.filed_date + 'T00:00:00'), 'd MMM yyyy')}
                             </p>
                           )}
                         </td>
