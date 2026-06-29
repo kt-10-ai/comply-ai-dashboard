@@ -8,6 +8,7 @@ from database import engine
 from calendar_engine import build_compliance_calendar
 from datetime import date
 import json
+import os
 import chat
 
 Base.metadata.create_all(bind=engine)
@@ -23,13 +24,15 @@ app.add_middleware(
 
 app.include_router(chat.router)
 
-with open("../data/compliance_rules.json") as f:
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
+
+with open(os.path.join(DATA_DIR, "compliance_rules.json")) as f:
     COMPLIANCE_RULES = json.load(f)
 
-with open("../data/rbi_portals.json") as f:
+with open(os.path.join(DATA_DIR, "rbi_portals.json")) as f:
     RBI_PORTALS = json.load(f)
 
-with open("../data/classification_metadata.json") as f:
+with open(os.path.join(DATA_DIR, "classification_metadata.json")) as f:
     CLASSIFICATION_METADATA = json.load(f)
 
 # ── Basic ──────────────────────────────────────────────────────────────────────
