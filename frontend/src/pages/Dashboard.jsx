@@ -3,8 +3,9 @@ import api from '../api/axios'
 import { useNavigate } from 'react-router-dom'
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell,
-  PieChart, Pie
+  PieChart, Pie, LabelList
 } from 'recharts'
+import CountUp from 'react-countup'
 import { format, parseISO } from 'date-fns'
 import { Building2, CalendarClock, AlertTriangle, MapPin, ArrowRight, ExternalLink } from 'lucide-react'
 
@@ -26,7 +27,9 @@ const KPICard = ({ label, value, sublabel, colorClass, icon: Icon }) => (
     <div className="flex justify-between items-start">
       <div>
         <p className="text-[11px] font-semibold uppercase tracking-wider text-subtext mb-1">{label}</p>
-        <p className="font-display text-3xl text-text leading-none mb-1">{value}</p>
+        <p className="font-display text-3xl text-text leading-none mb-1">
+          <CountUp end={value} duration={1.2} separator="," />
+        </p>
         <p className="text-xs text-subtext">{sublabel}</p>
       </div>
       {Icon && <Icon size={22} className="text-muted mt-0.5" />}
@@ -94,10 +97,10 @@ export default function Dashboard() {
 
       {/* KPI Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KPICard label="Monitored Entities" value={stats.total_nbfcs.toLocaleString()} sublabel="Registered NBFCs"  colorClass="kpi-blue"  icon={Building2} />
-        <KPICard label="Returns Overdue"    value={overdue}                             sublabel="Past deadline"    colorClass="kpi-red"   icon={AlertTriangle} />
-        <KPICard label="Due Within 7 Days"  value={dueSoon}                             sublabel="Action required"  colorClass="kpi-amber" icon={CalendarClock} />
-        <KPICard label="RBI Offices"        value={offices}                             sublabel="Regional coverage" colorClass="kpi-green" icon={MapPin} />
+        <KPICard label="Monitored Entities" value={stats.total_nbfcs} sublabel="Registered NBFCs"  colorClass="kpi-blue"  icon={Building2} />
+        <KPICard label="Returns Overdue"    value={overdue}           sublabel="Past deadline"    colorClass="kpi-red"   icon={AlertTriangle} />
+        <KPICard label="Due Within 7 Days"  value={dueSoon}           sublabel="Action required"  colorClass="kpi-amber" icon={CalendarClock} />
+        <KPICard label="RBI Offices"        value={offices}           sublabel="Regional coverage" colorClass="kpi-green" icon={MapPin} />
       </div>
 
       {/* Charts Row */}
@@ -105,12 +108,12 @@ export default function Dashboard() {
         <div className="card p-5 lg:col-span-3">
           <h3 className="text-sm font-semibold text-text mb-4">NBFCs by Classification</h3>
           <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={classData} layout="vertical" margin={{ left: 16, right: 24, top: 0, bottom: 0 }}>
-              <XAxis type="number" tick={{ fontSize: 11, fill: '#64748B' }} tickLine={false} axisLine={false} />
+            <BarChart data={classData} layout="vertical" margin={{ left: 16, right: 40, top: 0, bottom: 0 }}>
+              <XAxis type="number" scale="log" domain={['auto', 'auto']} tick={{ fontSize: 11, fill: '#64748B' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#0F172A', fontFamily: 'IBM Plex Mono' }} tickLine={false} axisLine={false} width={52} />
               <Tooltip content={<CustomBarTooltip />} cursor={{ fill: '#F1F5F9' }} />
-              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={20}>
-                {classData.map((d) => <Cell key={d.name} fill={CLASS_COLORS[d.name] || '#2563EB'} />)}
+              <Bar dataKey="value" fill="#0F2744" radius={[0, 4, 4, 0]} maxBarSize={20} isAnimationActive={true} animationBegin={200} animationDuration={800} animationEasing="ease-out">
+                <LabelList dataKey="value" position="right" style={{ fontSize: 11, fill: '#64748B' }} formatter={(val) => val.toLocaleString()} />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -120,7 +123,7 @@ export default function Dashboard() {
           <h3 className="text-sm font-semibold text-text mb-1">By SBR Layer</h3>
           <ResponsiveContainer width="100%" height={160}>
             <PieChart>
-              <Pie data={layerData} cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3} dataKey="value">
+              <Pie data={layerData} cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3} minAngle={8} dataKey="value" isAnimationActive={true} animationBegin={300} animationDuration={1000} animationEasing="ease-out">
                 {layerData.map((d, i) => <Cell key={i} fill={d.fill} />)}
               </Pie>
               <Tooltip formatter={(val, name) => [val.toLocaleString(), name]} contentStyle={{ fontSize: 11, borderRadius: 8 }} />
@@ -133,7 +136,9 @@ export default function Dashboard() {
                   <span className="w-2.5 h-2.5 rounded-full" style={{ background: d.fill }} />
                   <span className="text-subtext">{d.name}</span>
                 </div>
-                <span className="font-semibold text-text">{d.value.toLocaleString()}</span>
+                <span className="font-semibold text-text">
+                  <CountUp end={d.value} duration={1.2} separator="," />
+                </span>
               </div>
             ))}
           </div>
@@ -144,8 +149,8 @@ export default function Dashboard() {
       <div className="card overflow-hidden">
         <div className="px-5 py-4 border-b border-border flex justify-between items-center">
           <div>
-            <h3 className="text-sm font-semibold text-text">Upcoming Deadlines</h3>
-            <p className="text-xs text-subtext">Computed from RBI Master Directions — no manual input</p>
+            <h3 className="text-sm font-semibold text-text">Global Upcoming Deadlines (All NBFCs)</h3>
+            <p className="text-xs text-subtext">Master regulatory calendar computed from RBI Directions — applies across all layers and classifications.</p>
           </div>
           <button onClick={() => navigate('/calendar')} className="btn-secondary flex items-center gap-1.5 text-xs">
             View Calendar <ArrowRight size={12} />

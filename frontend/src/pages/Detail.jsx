@@ -299,7 +299,7 @@ export default function Detail() {
                       {isExp && (
                         <tr className="border-b border-blue-100">
                           <td colSpan={8} className="px-8 py-4 bg-blue-50/40">
-                            <div className="grid grid-cols-4 gap-6 text-xs">
+                            <div className="grid grid-cols-4 gap-6 text-xs border-b border-blue-200/60 pb-4 mb-4">
 
                               {/* Due date computation — the audit trail */}
                               <div className="col-span-1">
@@ -333,7 +333,7 @@ export default function Detail() {
                                 <p className="text-[10px] font-bold uppercase tracking-wider text-subtext mb-1">Portal</p>
                                 <a href={entry.portal_url} target="_blank" rel="noreferrer"
                                   className="text-accent hover:underline flex items-center gap-1">
-                                  {entry.portal_name} <ExternalLink size={10} />
+                                  {entry.portal_name || entry.submission_portal} <ExternalLink size={10} />
                                 </a>
                                 <p className="text-[10px] text-subtext mt-1">
                                   {entry.recipient_type === 'RBI Regional Office'
@@ -343,7 +343,41 @@ export default function Detail() {
                                     : 'Requires RBI-issued entity credentials'}
                                 </p>
                               </div>
+                            </div>
 
+                            {/* Second Row: Advanced Metadata */}
+                            <div className="grid grid-cols-4 gap-6 text-xs">
+                              <div className="col-span-1">
+                                <p className="text-[10px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1 text-red-700">
+                                  <AlertTriangle size={11} /> Risk Exposure
+                                </p>
+                                <p className="text-text font-semibold">Late Penalty: ₹{entry.penalty_per_day?.toLocaleString()}/day</p>
+                                <p className="text-subtext mt-0.5 text-[10px]">Max penalty: ₹{entry.penalty_max?.toLocaleString()}</p>
+                              </div>
+
+                              <div>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-subtext mb-1">Workflow Roles</p>
+                                <p className="text-text text-[11px] mb-0.5"><span className="text-subtext">Maker:</span> {entry.maker_role}</p>
+                                <p className="text-text text-[11px]"><span className="text-subtext">Checker:</span> {entry.checker_role}</p>
+                              </div>
+
+                              <div>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-subtext mb-1">Pre-requisites</p>
+                                <ul className="list-disc list-inside text-text text-[11px] space-y-0.5">
+                                  {entry.prerequisites?.map(p => <li key={p}>{p}</li>)}
+                                </ul>
+                              </div>
+
+                              <div>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-subtext mb-1">Preparation</p>
+                                <p className="text-text font-medium text-[11px]">SLA Buffer: {entry.internal_buffer_days} days early</p>
+                                {entry.blank_template_url && (
+                                  <a href={entry.blank_template_url} target="_blank" rel="noreferrer"
+                                    className="mt-1.5 inline-flex items-center gap-1 text-accent hover:underline text-[11px]">
+                                    Download {entry.submission_format} <ExternalLink size={10} />
+                                  </a>
+                                )}
+                              </div>
                             </div>
                           </td>
                         </tr>
@@ -357,7 +391,7 @@ export default function Detail() {
         </div>
 
         {/* Summary Sidebar */}
-        <div className="w-52 shrink-0 space-y-4">
+        <div className="w-64 shrink-0 space-y-4">
           <div className="card p-4">
             <h4 className="text-sm font-semibold text-text mb-3">Filing Summary</h4>
             <div className="grid grid-cols-2 gap-2">
@@ -391,6 +425,42 @@ export default function Detail() {
               </div>
             ))}
           </div>
+
+          {/* Structural Mandates */}
+          {nbfc.general_mandates && (
+            <div className="card p-4 space-y-3">
+              <h4 className="text-sm font-semibold text-text border-b border-border pb-2">Structural Mandates</h4>
+              
+              <div className="border-l-2 border-accent pl-2.5 space-y-1">
+                <p className="text-xs font-bold text-navy">Fair Practice Code</p>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded font-semibold text-slate-600">Board Approved</span>
+                  <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded font-semibold text-slate-600">Multilingual</span>
+                </div>
+              </div>
+
+              <div className="border-l-2 border-purple-500 pl-2.5 space-y-1 pt-1">
+                <p className="text-xs font-bold text-navy">Grievance Redressal</p>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded font-semibold text-slate-600">Max {nbfc.general_mandates.grievance_redressal.max_resolution_days} Days</span>
+                  <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded font-semibold text-slate-600">Officer Assigned</span>
+                  <span className="text-[9px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded font-semibold border border-amber-200">
+                    Ombudsman if ₹100Cr+
+                  </span>
+                </div>
+              </div>
+
+              <div className="border-l-2 border-orange-500 pl-2.5 space-y-1 pt-1">
+                <p className="text-xs font-bold text-navy">KYC / AML Cycle</p>
+                <p className="text-[9px] text-subtext leading-tight truncate">{nbfc.general_mandates.kyc_aml_policy.regulatory_act}</p>
+                <div className="flex flex-wrap gap-1.5 pt-0.5">
+                  <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded font-semibold text-slate-600">High Risk: {nbfc.general_mandates.kyc_aml_policy.reverification_cycle_high_risk_years}y</span>
+                  <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded font-semibold text-slate-600">Med: {nbfc.general_mandates.kyc_aml_policy.reverification_cycle_medium_risk_years}y</span>
+                  <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded font-semibold text-slate-600">Low: {nbfc.general_mandates.kyc_aml_policy.reverification_cycle_low_risk_years}y</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

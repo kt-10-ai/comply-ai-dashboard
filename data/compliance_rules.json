@@ -2,8 +2,19 @@
   {
     "id": "NBS-1",
     "return_name": "Capital Funds, Risk Assets & Risk Asset Ratio",
-    "applicable_classification": ["ICC","MFI","HFC","IFC","IDF","CIC"],
-    "applicable_layer": ["Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "IFC",
+      "IDF",
+      "CIC"
+    ],
+    "applicable_layer": [
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Quarterly",
     "rule_type": "quarter_end",
     "offset_days": 15,
@@ -11,15 +22,33 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Prudential Norms on Capital Adequacy) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Prudential Norms on Capital Adequacy) Directions, 2025",
     "clause": "Para 73(i)",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "CFO Sign-off"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/nbs-1.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "NBS-2",
     "return_name": "Exposure to Sensitive Sectors",
-    "applicable_classification": ["ICC","MFI","HFC"],
-    "applicable_layer": ["Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC"
+    ],
+    "applicable_layer": [
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Quarterly",
     "rule_type": "quarter_end",
     "offset_days": 15,
@@ -27,15 +56,33 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Scale Based Regulation) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Scale Based Regulation) Directions, 2025",
     "clause": "Para 73(ii)",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "CFO Sign-off"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/nbs-2.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "NBS-4",
-    "return_name": "Annual Return – Non-Deposit Taking NBFC",
-    "applicable_classification": ["ICC","Type-I","MFI","CIC","Factor"],
-    "applicable_layer": ["Base"],
+    "return_name": "Annual Return \u2013 Non-Deposit Taking NBFC",
+    "applicable_classification": [
+      "ICC",
+      "Type-I",
+      "MFI",
+      "CIC",
+      "Factor"
+    ],
+    "applicable_layer": [
+      "Base"
+    ],
     "frequency": "Annual",
     "rule_type": "fy_end",
     "offset_days": 60,
@@ -43,15 +90,34 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Scale Based Regulation) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Scale Based Regulation) Directions, 2025",
     "clause": "Para 74",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 10000,
+    "penalty_max": 500000,
+    "prerequisites": [
+      "Board Approval",
+      "Statutory Auditor Certificate"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/nbs-4.xml",
+    "maker_role": "Senior Compliance Manager",
+    "checker_role": "Chief Risk Officer (CRO)"
   },
   {
     "id": "NBS-6",
     "return_name": "Statement of Liquid Assets",
-    "applicable_classification": ["ICC","MFI","HFC"],
-    "applicable_layer": ["Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC"
+    ],
+    "applicable_layer": [
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Monthly",
     "rule_type": "month_end",
     "offset_days": 7,
@@ -59,15 +125,35 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Acceptance of Public Deposits) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Acceptance of Public Deposits) Directions, 2025",
     "clause": "Para 75",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "Department Head Approval"
+    ],
+    "internal_buffer_days": 2,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/nbs-6.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "NBS-7",
     "return_name": "Statement of Assets & Liabilities",
-    "applicable_classification": ["ICC","MFI","HFC","IFC","CIC"],
-    "applicable_layer": ["Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "IFC",
+      "CIC"
+    ],
+    "applicable_layer": [
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Quarterly",
     "rule_type": "quarter_end",
     "offset_days": 15,
@@ -75,15 +161,35 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Scale Based Regulation) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Scale Based Regulation) Directions, 2025",
     "clause": "Para 76",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "CFO Sign-off"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/nbs-7.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "ALM-1",
     "return_name": "Structural Liquidity Statement",
-    "applicable_classification": ["ICC","MFI","HFC","IFC","IDF","CIC"],
-    "applicable_layer": ["Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "IFC",
+      "IDF",
+      "CIC"
+    ],
+    "applicable_layer": [
+      "Upper",
+      "Top"
+    ],
     "frequency": "Monthly",
     "rule_type": "month_end",
     "offset_days": 10,
@@ -91,15 +197,35 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Asset Liability Management) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Asset Liability Management) Directions, 2025",
     "clause": "Para 85(i)",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "Department Head Approval"
+    ],
+    "internal_buffer_days": 2,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/alm-1.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "ALM-2",
     "return_name": "Short-term Dynamic Liquidity Statement",
-    "applicable_classification": ["ICC","MFI","HFC","IFC","IDF","CIC"],
-    "applicable_layer": ["Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "IFC",
+      "IDF",
+      "CIC"
+    ],
+    "applicable_layer": [
+      "Upper",
+      "Top"
+    ],
     "frequency": "Quarterly",
     "rule_type": "quarter_end",
     "offset_days": 10,
@@ -107,15 +233,36 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Asset Liability Management) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Asset Liability Management) Directions, 2025",
     "clause": "Para 85(ii)",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "CFO Sign-off"
+    ],
+    "internal_buffer_days": 2,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/alm-2.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "CRILC",
     "return_name": "Central Repository of Information on Large Credits",
-    "applicable_classification": ["ICC","MFI","HFC","IFC","IDF","CIC"],
-    "applicable_layer": ["Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "IFC",
+      "IDF",
+      "CIC"
+    ],
+    "applicable_layer": [
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Monthly",
     "rule_type": "month_end",
     "offset_days": 21,
@@ -123,15 +270,38 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Credit Information Reporting) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Credit Information Reporting) Directions, 2025",
     "clause": "Para 4",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "Department Head Approval"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/crilc.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "FIU-CTR",
     "return_name": "Cash Transaction Report",
-    "applicable_classification": ["ICC","MFI","HFC","P2P","AA","Factor","IFC"],
-    "applicable_layer": ["Base","Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "P2P",
+      "AA",
+      "Factor",
+      "IFC"
+    ],
+    "applicable_layer": [
+      "Base",
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Monthly",
     "rule_type": "month_end",
     "offset_days": 15,
@@ -139,15 +309,38 @@
     "recipient_type": "External Regulator",
     "submission_portal": "FIU-IND FINNET 2.0",
     "portal_url": "https://fiuindia.gov.in/",
-    "legal_source": "RBI (NBFCs – Know Your Customer) Directions, 2025",
-    "clause": "Rule 3(1)(A) — PMLA 2002",
-    "regulator": "FIU-IND"
+    "legal_source": "RBI (NBFCs \u2013 Know Your Customer) Directions, 2025",
+    "clause": "Rule 3(1)(A) \u2014 PMLA 2002",
+    "regulator": "FIU-IND",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "Department Head Approval"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "PDF / Web Form",
+    "blank_template_url": "https://rbi.org.in/scripts/BS_ViewForms.aspx",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "FIU-STR",
     "return_name": "Suspicious Transaction Report",
-    "applicable_classification": ["ICC","MFI","HFC","P2P","AA","Factor","IFC"],
-    "applicable_layer": ["Base","Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "P2P",
+      "AA",
+      "Factor",
+      "IFC"
+    ],
+    "applicable_layer": [
+      "Base",
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Event-based",
     "rule_type": "event",
     "offset_days": 0,
@@ -155,15 +348,44 @@
     "recipient_type": "External Regulator",
     "submission_portal": "FIU-IND FINNET 2.0",
     "portal_url": "https://fiuindia.gov.in/",
-    "legal_source": "RBI (NBFCs – Know Your Customer) Directions, 2025",
-    "clause": "Rule 3(1)(B) — PMLA 2002",
-    "regulator": "FIU-IND"
+    "legal_source": "RBI (NBFCs \u2013 Know Your Customer) Directions, 2025",
+    "clause": "Rule 3(1)(B) \u2014 PMLA 2002",
+    "regulator": "FIU-IND",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "Department Head Approval"
+    ],
+    "internal_buffer_days": 0,
+    "submission_format": "PDF / Web Form",
+    "blank_template_url": "https://rbi.org.in/scripts/BS_ViewForms.aspx",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "AUD-ACC",
     "return_name": "Audited Annual Accounts & Statutory Auditor Report",
-    "applicable_classification": ["ICC","Type-I","MFI","HFC","CIC","P2P","AA","Factor","IFC","PD","IDF","NOFHC","MGC"],
-    "applicable_layer": ["Base","Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "Type-I",
+      "MFI",
+      "HFC",
+      "CIC",
+      "P2P",
+      "AA",
+      "Factor",
+      "IFC",
+      "PD",
+      "IDF",
+      "NOFHC",
+      "MGC"
+    ],
+    "applicable_layer": [
+      "Base",
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Annual",
     "rule_type": "fy_end",
     "offset_days": 60,
@@ -171,15 +393,33 @@
     "recipient_type": "RBI Regional Office",
     "submission_portal": "RBI COSMOS",
     "portal_url": "https://cosmos.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Scale Based Regulation) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Scale Based Regulation) Directions, 2025",
     "clause": "Para 90",
-    "regulator": "RBI – Regional Office (NBFC's registered office)"
+    "regulator": "RBI \u2013 Regional Office (NBFC's registered office)",
+    "penalty_per_day": 10000,
+    "penalty_max": 500000,
+    "prerequisites": [
+      "Board Approval",
+      "Statutory Auditor Certificate"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "PDF / Web Form",
+    "blank_template_url": "https://rbi.org.in/scripts/BS_ViewForms.aspx",
+    "maker_role": "Senior Compliance Manager",
+    "checker_role": "Chief Risk Officer (CRO)"
   },
   {
     "id": "CIC-ND",
     "return_name": "CIC Non-Deposit Return",
-    "applicable_classification": ["CIC"],
-    "applicable_layer": ["Base","Middle","Upper","Top"],
+    "applicable_classification": [
+      "CIC"
+    ],
+    "applicable_layer": [
+      "Base",
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Quarterly",
     "rule_type": "quarter_end",
     "offset_days": 15,
@@ -189,13 +429,30 @@
     "portal_url": "https://cims.rbi.org.in/",
     "legal_source": "RBI (Core Investment Companies) Directions, 2025",
     "clause": "Para 12",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "CFO Sign-off"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/cic-nd.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "P2P-QR",
     "return_name": "P2P Quarterly Compliance Return",
-    "applicable_classification": ["P2P"],
-    "applicable_layer": ["Base","Middle","Upper","Top"],
+    "applicable_classification": [
+      "P2P"
+    ],
+    "applicable_layer": [
+      "Base",
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Quarterly",
     "rule_type": "quarter_end",
     "offset_days": 15,
@@ -203,15 +460,32 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFC – Peer-to-Peer Lending Platform) Directions, 2025",
+    "legal_source": "RBI (NBFC \u2013 Peer-to-Peer Lending Platform) Directions, 2025",
     "clause": "Para 14",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "CFO Sign-off"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/p2p-qr.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "AA-QR",
     "return_name": "Account Aggregator Quarterly Return",
-    "applicable_classification": ["AA"],
-    "applicable_layer": ["Base","Middle","Upper","Top"],
+    "applicable_classification": [
+      "AA"
+    ],
+    "applicable_layer": [
+      "Base",
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Quarterly",
     "rule_type": "quarter_end",
     "offset_days": 15,
@@ -219,15 +493,42 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFC – Account Aggregator) Directions, 2025",
+    "legal_source": "RBI (NBFC \u2013 Account Aggregator) Directions, 2025",
     "clause": "Para 18",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "CFO Sign-off"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/aa-qr.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "KYC-REV",
     "return_name": "KYC Periodic Re-verification",
-    "applicable_classification": ["ICC","MFI","HFC","P2P","AA","Factor","IFC","PD","IDF","NOFHC","MGC"],
-    "applicable_layer": ["Base","Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "P2P",
+      "AA",
+      "Factor",
+      "IFC",
+      "PD",
+      "IDF",
+      "NOFHC",
+      "MGC"
+    ],
+    "applicable_layer": [
+      "Base",
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Annual",
     "rule_type": "fy_end",
     "offset_days": 30,
@@ -235,15 +536,35 @@
     "recipient_type": "External Regulator",
     "submission_portal": "CKYC Registry (CERSAI)",
     "portal_url": "https://www.ckycindia.in/ckyc/index.php",
-    "legal_source": "RBI (NBFCs – Know Your Customer) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Know Your Customer) Directions, 2025",
     "clause": "Para 38",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 10000,
+    "penalty_max": 500000,
+    "prerequisites": [
+      "Department Head Approval"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "PDF / Web Form",
+    "blank_template_url": "https://rbi.org.in/scripts/BS_ViewForms.aspx",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "IRACP",
     "return_name": "Income Recognition, Asset Classification & Provisioning Return",
-    "applicable_classification": ["ICC","MFI","HFC","IFC","IDF"],
-    "applicable_layer": ["Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "IFC",
+      "IDF"
+    ],
+    "applicable_layer": [
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Quarterly",
     "rule_type": "quarter_end",
     "offset_days": 21,
@@ -251,15 +572,37 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Income Recognition, Asset Classification and Provisioning) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Income Recognition, Asset Classification and Provisioning) Directions, 2025",
     "clause": "Para 16",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "CFO Sign-off"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/iracp.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "GOV-ANN",
     "return_name": "Annual Governance Compliance Report",
-    "applicable_classification": ["ICC","MFI","HFC","IFC","IDF","CIC","NOFHC"],
-    "applicable_layer": ["Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "IFC",
+      "IDF",
+      "CIC",
+      "NOFHC"
+    ],
+    "applicable_layer": [
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Annual",
     "rule_type": "fy_end",
     "offset_days": 60,
@@ -267,15 +610,37 @@
     "recipient_type": "RBI Regional Office",
     "submission_portal": "RBI COSMOS",
     "portal_url": "https://cosmos.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Governance) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Governance) Directions, 2025",
     "clause": "Para 22",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 10000,
+    "penalty_max": 500000,
+    "prerequisites": [
+      "Board Approval",
+      "Statutory Auditor Certificate"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "PDF / Web Form",
+    "blank_template_url": "https://rbi.org.in/scripts/BS_ViewForms.aspx",
+    "maker_role": "Senior Compliance Manager",
+    "checker_role": "Chief Risk Officer (CRO)"
   },
   {
     "id": "CIR-RPT",
     "return_name": "Credit Information Reporting to CICs",
-    "applicable_classification": ["ICC","MFI","HFC","Factor","IFC"],
-    "applicable_layer": ["Base","Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "Factor",
+      "IFC"
+    ],
+    "applicable_layer": [
+      "Base",
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Monthly",
     "rule_type": "month_end",
     "offset_days": 7,
@@ -283,15 +648,36 @@
     "recipient_type": "External Regulator",
     "submission_portal": "TransUnion CIBIL / Equifax / Experian / CRIF",
     "portal_url": "https://myscore.cibil.com/CreditView/member-login.page",
-    "legal_source": "RBI (NBFCs – Credit Information Reporting) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Credit Information Reporting) Directions, 2025",
     "clause": "Para 6",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "Department Head Approval"
+    ],
+    "internal_buffer_days": 2,
+    "submission_format": "PDF / Web Form",
+    "blank_template_url": "https://rbi.org.in/scripts/BS_ViewForms.aspx",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   },
   {
     "id": "CAP-ADQ",
     "return_name": "Capital Adequacy & Prudential Norms Return",
-    "applicable_classification": ["ICC","MFI","HFC","IFC","IDF","CIC"],
-    "applicable_layer": ["Middle","Upper","Top"],
+    "applicable_classification": [
+      "ICC",
+      "MFI",
+      "HFC",
+      "IFC",
+      "IDF",
+      "CIC"
+    ],
+    "applicable_layer": [
+      "Middle",
+      "Upper",
+      "Top"
+    ],
     "frequency": "Quarterly",
     "rule_type": "quarter_end",
     "offset_days": 15,
@@ -299,8 +685,18 @@
     "recipient_type": "Central Portal",
     "submission_portal": "RBI CIMS",
     "portal_url": "https://cims.rbi.org.in/",
-    "legal_source": "RBI (NBFCs – Prudential Norms on Capital Adequacy) Directions, 2025",
+    "legal_source": "RBI (NBFCs \u2013 Prudential Norms on Capital Adequacy) Directions, 2025",
     "clause": "Para 8",
-    "regulator": "RBI – DNBS"
+    "regulator": "RBI \u2013 DNBS",
+    "penalty_per_day": 5000,
+    "penalty_max": 100000,
+    "prerequisites": [
+      "CFO Sign-off"
+    ],
+    "internal_buffer_days": 5,
+    "submission_format": "XBRL Template",
+    "blank_template_url": "https://cims.rbi.org.in/templates/cap-adq.xml",
+    "maker_role": "Compliance Analyst",
+    "checker_role": "Compliance Head"
   }
 ]

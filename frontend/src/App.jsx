@@ -10,6 +10,7 @@ import CalendarPage from './pages/Calendar'
 import Search from './pages/Search'
 import Matrix from './pages/Matrix'
 import Detail from './pages/Detail'
+import Chatbot from './components/Chatbot'
 
 function AppLayout() {
   return (
@@ -26,6 +27,7 @@ function AppLayout() {
             <Route path="/nbfc/:cin" element={<Detail />} />
           </Routes>
         </main>
+        <Chatbot />
       </div>
     </div>
   )

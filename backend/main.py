@@ -1,12 +1,14 @@
 from fastapi import FastAPI, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from database import get_db
 from models import NBFC, Base
 from database import engine
 from calendar_engine import build_compliance_calendar
 from datetime import date
 import json
+import chat
 
 Base.metadata.create_all(bind=engine)
 
@@ -19,11 +21,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(chat.router)
+
 with open("../data/compliance_rules.json") as f:
     COMPLIANCE_RULES = json.load(f)
 
 with open("../data/rbi_portals.json") as f:
     RBI_PORTALS = json.load(f)
+
+with open("../data/classification_metadata.json") as f:
+    CLASSIFICATION_METADATA = json.load(f)
 
 # ── Basic ──────────────────────────────────────────────────────────────────────
 
@@ -39,6 +46,7 @@ def search_nbfc(
     classification: str = Query(None),
     layer: str = Query(None),
     regional_office: str = Query(None),
+    limit: int = Query(100),
     db: Session = Depends(get_db)
 ):
     q = db.query(NBFC)
@@ -50,8 +58,20 @@ def search_nbfc(
         q = q.filter(NBFC.layer == layer)
     if regional_office:
         q = q.filter(NBFC.regional_office == regional_office)
-    results = q.limit(100).all()
+    results = q.limit(limit).all()
     return [r.__dict__ for r in results]
+
+@app.get("/nbfc/stats")
+def get_nbfc_stats(db: Session = Depends(get_db)):
+    total = db.query(NBFC).count()
+    layers = db.query(NBFC.layer, func.count(NBFC.layer)).group_by(NBFC.layer).all()
+    classifications = db.query(NBFC.classification, func.count(NBFC.classification)).group_by(NBFC.classification).all()
+    
+    return {
+        "total": total,
+        "layers": {k: v for k, v in layers if k},
+        "classifications": {k: v for k, v in classifications if k}
+    }
 
 @app.get("/nbfc/{cin}")
 def get_nbfc(cin: str, db: Session = Depends(get_db)):
@@ -81,6 +101,7 @@ def get_nbfc(cin: str, db: Session = Depends(get_db)):
         "regional_office": nbfc.regional_office,
         "accepts_deposits": nbfc.accepts_deposits,
         "compliance_calendar": compliance_calendar,
+        "general_mandates": CLASSIFICATION_METADATA["compliance_framework"]["general_mandates"]
     }
 
 # ── Compliance Rules ───────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import api from '../api/axios'
 import { useNavigate } from 'react-router-dom'
-import { Search as SearchIcon, Filter, RefreshCw, ChevronRight, Download } from 'lucide-react'
+import { Search as SearchIcon, Filter, RefreshCw, ChevronRight, Download, Building2, Layers, Briefcase } from 'lucide-react'
 import LayerBadge from '../components/LayerBadge'
 
 const CLASSIFICATIONS = ["ICC","Type-I","MFI","HFC","CIC","P2P","AA","Factor","IFC","PD","IDF","NOFHC","MGC"]
@@ -23,22 +23,31 @@ const CLASS_LABELS = {
 
 export default function Search() {
   const [nbfcs, setNbfcs] = useState([])
+  const [stats, setStats] = useState({ total: 0, layers: {}, classifications: {} })
+  
   const [name, setName] = useState('')
   const [classification, setClassification] = useState('')
   const [layer, setLayer] = useState('')
   const [office, setOffice] = useState('')
   const [loading, setLoading] = useState(false)
+  const [page, setPage] = useState(1)
+  
   const navigate = useNavigate()
+
+  useEffect(() => {
+    api.get('/nbfc/stats').then(res => setStats(res.data)).catch(console.error)
+  }, [])
 
   const fetch = useCallback(() => {
     setLoading(true)
-    const params = {}
+    const params = { limit: 100 }
     if (name) params.name = name
     if (classification) params.classification = classification
     if (layer) params.layer = layer
     if (office) params.regional_office = office
+    
     api.get('/nbfc/search', { params })
-      .then(r => { setNbfcs(r.data); setLoading(false) })
+      .then(r => { setNbfcs(r.data); setLoading(false); setPage(1) })
       .catch(() => setLoading(false))
   }, [name, classification, layer, office])
 
@@ -46,128 +55,195 @@ export default function Search() {
 
   const reset = () => {
     setName(''); setClassification(''); setLayer(''); setOffice('')
-    api.get('/nbfc/search').then(r => setNbfcs(r.data))
+    api.get('/nbfc/search', { params: { limit: 100 } }).then(r => setNbfcs(r.data))
   }
 
-  const exportCSV = () => {
-    const headers = ['sl_no','nbfc_name','cin','classification','layer','accepts_deposits','regional_office']
-    const rows = nbfcs.map(n => headers.map(h => `"${n[h] ?? ''}"`).join(','))
-    const blob = new Blob([[headers.join(','), ...rows].join('\n')], { type: 'text/csv' })
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob)
-    a.download = 'nbfc_registry.csv'; a.click()
+  const exportCSV = async () => {
+    const params = { limit: 10000 }
+    if (name) params.name = name
+    if (classification) params.classification = classification
+    if (layer) params.layer = layer
+    if (office) params.regional_office = office
+
+    try {
+      const res = await api.get('/nbfc/search', { params })
+      const data = res.data
+
+      const headers = "Sl No.,Name,CIN,Classification,Layer,Regional Office\n"
+      const rows = data.map(n => `"${n.sl_no || ''}","${n.nbfc_name}","${n.cin}","${n.classification}","${n.layer}","${n.regional_office}"`).join("\n")
+      const csv = headers + rows
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `comply_ai_nbfc_registry_${new Date().toISOString().slice(0, 10)}.csv`
+      a.click()
+    } catch (e) {
+      console.error("Export failed", e)
+      alert("Failed to export CSV.")
+    }
   }
+
+  const itemsPerPage = 15
+  const totalPages = Math.ceil(nbfcs.length / itemsPerPage)
+  const paginated = nbfcs.slice((page - 1) * itemsPerPage, page * itemsPerPage)
 
   return (
-    <div className="space-y-4 animate-fade-in">
-      {/* Filter bar */}
-      <div className="card p-4 space-y-3">
-        <form onSubmit={e => { e.preventDefault(); fetch() }} className="flex gap-3">
-          <div className="relative flex-1">
-            <SearchIcon size={15} className="absolute left-3 top-2.5 text-muted" />
-            <input
-              type="text"
-              placeholder="Search NBFCs by name…"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              className="input-base pl-9"
-            />
-          </div>
-          <button type="submit" className="btn-primary flex items-center gap-2">
-            Search
-          </button>
-          <button type="button" onClick={exportCSV} className="btn-secondary flex items-center gap-2">
-            <Download size={14} /> Export
-          </button>
-        </form>
+    <div className="max-w-7xl mx-auto space-y-6 pb-20">
+      
+      {/* Header & Export */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-navy flex items-center gap-2">
+            <Building2 className="text-accent" /> NBFC Registry
+          </h1>
+          <p className="text-text mt-1 text-sm">Browse and filter the complete database of RBI-registered NBFCs.</p>
+        </div>
+        <button onClick={exportCSV} className="flex items-center gap-2 px-4 py-2 bg-navy text-white rounded-lg hover:bg-navy/90 text-sm font-medium transition-colors">
+          <Download size={16} /> Export to CSV
+        </button>
+      </div>
 
-        <div className="flex flex-wrap items-center gap-3 pt-1 border-t border-border/60">
-          <div className="flex items-center gap-1.5 text-subtext">
-            <Filter size={13} />
-            <span className="text-xs font-semibold uppercase tracking-wider">Filters</span>
+      {/* KPI Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="card p-4 flex items-center gap-4">
+          <div className="p-3 bg-blue-100 text-accent rounded-xl"><Building2 size={24} /></div>
+          <div>
+            <p className="text-sm text-text">Total NBFCs</p>
+            <h3 className="text-2xl font-bold text-navy">{stats.total.toLocaleString()}</h3>
           </div>
-          <select value={classification} onChange={e => setClassification(e.target.value)}
-            className="input-base !w-auto text-xs py-1.5">
-            <option value="">All Classifications</option>
-            {CLASSIFICATIONS.map(c => <option key={c} value={c}>{c} — {CLASS_LABELS[c]}</option>)}
-          </select>
-          <select value={layer} onChange={e => setLayer(e.target.value)}
-            className="input-base !w-auto text-xs py-1.5">
-            <option value="">All Layers</option>
-            {LAYERS.map(l => <option key={l} value={l}>{l} Layer</option>)}
-          </select>
-          <select value={office} onChange={e => setOffice(e.target.value)}
-            className="input-base !w-auto text-xs py-1.5">
-            <option value="">All Offices</option>
-            {OFFICES.map(o => <option key={o} value={o}>{o}</option>)}
-          </select>
-          <button onClick={reset} className="text-xs text-subtext hover:text-accent flex items-center gap-1 ml-auto">
-            <RefreshCw size={12} /> Reset
-          </button>
+        </div>
+        <div className="card p-4 flex items-center gap-4">
+          <div className="p-3 bg-purple-100 text-purple-600 rounded-xl"><Layers size={24} /></div>
+          <div>
+            <p className="text-sm text-text">Base Layer Companies</p>
+            <h3 className="text-2xl font-bold text-navy">{stats.layers['Base']?.toLocaleString() || 0}</h3>
+          </div>
+        </div>
+        <div className="card p-4 flex items-center gap-4">
+          <div className="p-3 bg-orange-100 text-orange-600 rounded-xl"><Briefcase size={24} /></div>
+          <div>
+            <p className="text-sm text-text">ICC Classification</p>
+            <h3 className="text-2xl font-bold text-navy">{stats.classifications['ICC']?.toLocaleString() || 0}</h3>
+          </div>
         </div>
       </div>
 
-      {/* Results */}
-      <div className="flex items-center justify-between px-1">
-        <p className="text-xs text-subtext font-semibold">
-          Showing <span className="text-text">{nbfcs.length}</span> of 9,074 registered NBFCs
-        </p>
+      {/* Search & Filters */}
+      <div className="card p-4 flex flex-col md:flex-row gap-3">
+        <div className="relative flex-1">
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <input 
+            type="text" 
+            placeholder="Search NBFC by name..." 
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-border rounded-lg text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && fetch()}
+          />
+        </div>
+        
+        <select value={classification} onChange={e => setClassification(e.target.value)} className="px-3 py-2 bg-slate-50 border border-border rounded-lg text-sm focus:outline-none">
+          <option value="">All Classifications</option>
+          {CLASSIFICATIONS.map(c => <option key={c} value={c}>{CLASS_LABELS[c] || c}</option>)}
+        </select>
+
+        <select value={layer} onChange={e => setLayer(e.target.value)} className="px-3 py-2 bg-slate-50 border border-border rounded-lg text-sm focus:outline-none">
+          <option value="">All Layers</option>
+          {LAYERS.map(l => <option key={l} value={l}>{l} Layer</option>)}
+        </select>
+
+        <select value={office} onChange={e => setOffice(e.target.value)} className="px-3 py-2 bg-slate-50 border border-border rounded-lg text-sm focus:outline-none">
+          <option value="">All Regions</option>
+          {OFFICES.map(o => <option key={o} value={o}>{o}</option>)}
+        </select>
+
+        <button onClick={fetch} className="px-4 py-2 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent/90 transition-colors">
+          Search
+        </button>
+        <button onClick={reset} className="px-3 py-2 text-text hover:bg-slate-100 rounded-lg transition-colors" title="Reset Filters">
+          <RefreshCw size={18} />
+        </button>
       </div>
 
-      {loading ? (
-        <div className="card flex items-center justify-center h-48">
-          <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-        </div>
-      ) : (
-        <div className="card overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[800px]">
-              <thead>
+      {/* Data Grid */}
+      <div className="card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-slate-50 border-b border-border text-text font-medium">
+              <tr>
+                <th className="px-6 py-4">NBFC Name</th>
+                <th className="px-6 py-4">CIN</th>
+                <th className="px-6 py-4">Classification</th>
+                <th className="px-6 py-4">Layer</th>
+                <th className="px-6 py-4">Regional Office</th>
+                <th className="px-6 py-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {loading ? (
                 <tr>
-                  <th className="table-header-cell w-16">No.</th>
-                  <th className="table-header-cell">NBFC Name / CIN</th>
-                  <th className="table-header-cell">Classification</th>
-                  <th className="table-header-cell">Layer</th>
-                  <th className="table-header-cell">Deposits</th>
-                  <th className="table-header-cell">Regional Office</th>
-                  <th className="table-header-cell w-16"></th>
+                  <td colSpan="6" className="px-6 py-8 text-center text-slate-500">Loading registry data...</td>
                 </tr>
-              </thead>
-              <tbody>
-                {nbfcs.length === 0 ? (
-                  <tr><td colSpan={7} className="text-center py-12 text-subtext text-sm">No records found. Adjust filters.</td></tr>
-                ) : nbfcs.map(n => (
-                  <tr key={n.cin}
-                    onClick={() => navigate(`/nbfc/${encodeURIComponent(n.cin)}`)}
-                    className="hover:bg-blue-50/40 cursor-pointer transition-colors group">
-                    <td className="table-cell font-mono text-xs text-subtext">{n.sl_no}</td>
-                    <td className="table-cell">
-                      <p className="font-semibold text-text text-sm group-hover:text-accent transition-colors">{n.nbfc_name}</p>
-                      <p className="font-mono text-[10px] text-subtext">{n.cin}</p>
-                    </td>
-                    <td className="table-cell">
-                      <span className="bg-navy/5 text-navy border border-navy/10 px-2 py-0.5 rounded text-xs font-semibold font-mono">
-                        {n.classification}
+              ) : paginated.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-8 text-center text-slate-500">No NBFCs found matching your criteria.</td>
+                </tr>
+              ) : (
+                paginated.map(nbfc => (
+                  <tr key={nbfc.cin} className="hover:bg-slate-50/50 transition-colors group cursor-pointer" onClick={() => navigate(`/nbfc/${nbfc.cin}`)}>
+                    <td className="px-6 py-3 font-medium text-navy">{nbfc.nbfc_name}</td>
+                    <td className="px-6 py-3 text-text font-mono text-xs">{nbfc.cin}</td>
+                    <td className="px-6 py-3">
+                      <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md text-xs font-medium">
+                        {CLASS_LABELS[nbfc.classification] || nbfc.classification || 'Unknown'}
                       </span>
                     </td>
-                    <td className="table-cell">
-                      <LayerBadge layer={n.layer} />
+                    <td className="px-6 py-3">
+                      <LayerBadge layer={nbfc.layer} />
                     </td>
-                    <td className="table-cell">
-                      <span className={`text-xs font-medium ${n.accepts_deposits === 'Yes' ? 'text-success' : 'text-subtext'}`}>
-                        {n.accepts_deposits === 'Yes' ? '✓ Accepts' : '✗ No'}
-                      </span>
-                    </td>
-                    <td className="table-cell text-sm text-subtext">{n.regional_office}</td>
-                    <td className="table-cell text-right">
-                      <ChevronRight size={16} className="text-muted group-hover:text-accent transition-colors ml-auto" />
+                    <td className="px-6 py-3 text-text text-xs">{nbfc.regional_office}</td>
+                    <td className="px-6 py-3 text-right">
+                      <button 
+                        className="p-1.5 text-accent hover:bg-blue-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                        <ChevronRight size={18} />
+                      </button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      )}
+        
+        {/* Pagination */}
+        {!loading && nbfcs.length > 0 && (
+          <div className="p-4 border-t border-border flex items-center justify-between text-sm text-text bg-slate-50">
+            <div>
+              Showing {((page - 1) * itemsPerPage) + 1} to {Math.min(page * itemsPerPage, nbfcs.length)} of top {nbfcs.length} results
+            </div>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-3 py-1 bg-white border border-border rounded-md hover:bg-slate-50 disabled:opacity-50"
+              >
+                Prev
+              </button>
+              <button 
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="px-3 py-1 bg-white border border-border rounded-md hover:bg-slate-50 disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
     </div>
   )
 }

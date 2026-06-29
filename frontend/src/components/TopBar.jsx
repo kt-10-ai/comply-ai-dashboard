@@ -139,6 +139,7 @@ export default function TopBar() {
   const navigate                  = useNavigate()
   const [userMenu, setUserMenu]   = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
   const [alertCount, setAlertCount] = useState(0)
   const userRef  = useRef(null)
   const notifRef = useRef(null)
@@ -234,7 +235,7 @@ export default function TopBar() {
                 <div className="py-1.5">
                   <button
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-xs text-subtext hover:bg-slate-50 hover:text-text transition-colors"
-                    onClick={() => setUserMenu(false)}
+                    onClick={() => { setUserMenu(false); setProfileOpen(true); }}
                   >
                     <User size={13} /> My Profile
                   </button>
@@ -250,6 +251,45 @@ export default function TopBar() {
           </div>
         )}
       </div>
+
+      {/* Profile Modal */}
+      {profileOpen && (
+        <div className="fixed inset-0 bg-navy/20 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={() => setProfileOpen(false)}>
+          <div className="bg-white rounded-xl shadow-elevated w-full max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="px-5 py-4 border-b border-border flex justify-between items-center bg-slate-50">
+              <h3 className="font-semibold text-text">My Profile</h3>
+              <button onClick={() => setProfileOpen(false)} className="text-subtext hover:text-text transition-colors">
+                <X size={16} />
+              </button>
+            </div>
+            <div className="p-6">
+              <div className="flex flex-col items-center mb-6">
+                <div className="w-16 h-16 rounded-full bg-navy flex items-center justify-center mb-3">
+                  <span className="text-xl font-bold text-white">{initials}</span>
+                </div>
+                <h4 className="text-base font-bold text-text truncate max-w-full">{email}</h4>
+                <p className="text-xs text-subtext mt-1">Compliance Officer</p>
+              </div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center text-sm border-b border-border/50 pb-2">
+                  <span className="text-subtext text-xs">User ID</span>
+                  <span className="font-mono text-[10px] text-text">{user?.id?.split('-')[0] || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm border-b border-border/50 pb-2">
+                  <span className="text-subtext text-xs">Account Status</span>
+                  <span className="text-success font-semibold flex items-center gap-1.5 text-xs">
+                    <CheckCircle size={13} /> Active
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm pb-1">
+                  <span className="text-subtext text-xs">Role</span>
+                  <span className="text-text font-medium text-xs bg-slate-100 px-2 py-0.5 rounded">Admin</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   )
 }
