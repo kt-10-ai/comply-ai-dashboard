@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import Auth from './pages/Auth'
+import Mfa from './pages/Mfa'
 import Dashboard from './pages/Dashboard'
 import CalendarPage from './pages/Calendar'
 import Search from './pages/Search'
@@ -40,6 +41,7 @@ export default function App() {
         <Routes>
           {/* Public route */}
           <Route path="/auth" element={<Auth />} />
+          <Route path="/mfa"  element={<Mfa />} />
 
           {/* All other routes are protected */}
           <Route path="/*" element={

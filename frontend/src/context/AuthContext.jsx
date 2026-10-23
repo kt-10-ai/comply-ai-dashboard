@@ -3,24 +3,47 @@ import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
+// mfaStatus:
+//   'verified'      → session is aal2, full access
+//   'needs_enroll'  → no authenticator set up yet, must enrol before access
+//   'needs_verify'  → authenticator set up, must enter a code this session
+async function resolveMfaStatus() {
+  const { data, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+  if (error) return 'needs_verify'
+  if (data.currentLevel === 'aal2') return 'verified'
+  return data.nextLevel === 'aal2' ? 'needs_verify' : 'needs_enroll'
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser]       = useState(null)
-  const [loading, setLoading] = useState(true)
+  const bypass = import.meta.env.VITE_BYPASS_AUTH === 'true'
+  const [user, setUser]           = useState(bypass ? { id: 'local-dev', email: 'dev@localhost' } : null)
+  const [mfaStatus, setMfaStatus] = useState(bypass ? 'verified' : null)
+  const [loading, setLoading]     = useState(!bypass)
+
+  const syncSession = async (session) => {
+    setUser(session?.user ?? null)
+    setMfaStatus(session ? await resolveMfaStatus() : null)
+    setLoading(false)
+  }
 
   useEffect(() => {
+    if (bypass) return
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    supabase.auth.getSession().then(({ data: { session } }) => syncSession(session))
 
-    // Listen for auth state changes
+    // Listen for auth state changes (incl. MFA_CHALLENGE_VERIFIED).
+    // Deferred because awaiting supabase calls inside this callback can deadlock.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
+      setTimeout(() => syncSession(session), 0)
     })
 
     return () => subscription.unsubscribe()
   }, [])
+
+  const refreshMfa = async () => {
+    if (bypass) return
+    setMfaStatus(await resolveMfaStatus())
+  }
 
   const signUp = async (email, password) => {
     const { data, error } = await supabase.auth.signUp({ email, password })
@@ -37,7 +60,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, mfaStatus, loading, signIn, signUp, signOut, refreshMfa }}>
       {children}
     </AuthContext.Provider>
   )

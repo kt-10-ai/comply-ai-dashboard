@@ -3,9 +3,9 @@ import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth()
+  const { user, mfaStatus, loading } = useAuth()
 
-  if (loading) {
+  if (loading || (user && !mfaStatus)) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -18,6 +18,11 @@ export default function ProtectedRoute({ children }) {
 
   if (!user) {
     return <Navigate to="/auth" replace />
+  }
+
+  // Password alone isn't enough — every user must pass the authenticator step
+  if (mfaStatus !== 'verified') {
+    return <Navigate to="/mfa" replace />
   }
 
   return children
