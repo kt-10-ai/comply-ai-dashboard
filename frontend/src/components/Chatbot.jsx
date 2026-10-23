@@ -35,7 +35,7 @@ export default function Chatbot() {
       const res = await api.post('/api/chat', {
         message: userMessage,
         history: historyToSent
-      });
+      }, { timeout: 60000 });  // LLM + DB tool calls can exceed the default 10s
       
       setMessages([...newMessages, { role: 'assistant', content: res.data.reply }]);
     } catch (error) {

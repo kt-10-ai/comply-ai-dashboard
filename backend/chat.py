@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import NBFC
 
-load_dotenv()
+ENV_PATH = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(dotenv_path=ENV_PATH)
 
 router = APIRouter()
 
@@ -47,28 +48,20 @@ tools = [
 
 @router.post("/api/chat")
 async def chat_endpoint(req: ChatMessage, db: Session = Depends(get_db)):
-    load_dotenv(override=True)
-    API_KEY = os.getenv("GEMINI_API_KEY")
+    load_dotenv(dotenv_path=ENV_PATH, override=True)
+    # GEMINI_API_KEY is still accepted for older deployments
+    API_KEY = os.getenv("OPENROUTER_API_KEY") or os.getenv("GEMINI_API_KEY")
     if not API_KEY:
         raise HTTPException(
-            status_code=500, 
-            detail="AI API Key not configured. Please add GEMINI_API_KEY to your backend/.env file."
+            status_code=500,
+            detail="AI API Key not configured. Please add OPENROUTER_API_KEY to the project root .env file."
         )
-    
-    # Check if it's an OpenRouter key
-    if API_KEY.startswith("sk-or"):
-        client = AsyncOpenAI(
-            base_url="https://openrouter.ai/api/v1",
-            api_key=API_KEY,
-        )
-        model = "google/gemini-2.5-flash"
-    else:
-        # Fallback to standard OpenAI if needed, but assuming OpenRouter
-        client = AsyncOpenAI(
-            base_url="https://openrouter.ai/api/v1",
-            api_key=API_KEY,
-        )
-        model = "google/gemini-2.5-flash"
+
+    client = AsyncOpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=API_KEY,
+    )
+    model = os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-flash")
     
     try:
         messages = [{"role": "system", "content": system_prompt}]

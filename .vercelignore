@@ -1,0 +1,12 @@
+# Secrets — set these in Vercel project settings instead
+.env
+**/.env
+!**/.env.example
+
+.venv/
+**/node_modules/
+frontend/dist/
+**/__pycache__/
+scripts/
+data/*.PDF
+data/*.csv

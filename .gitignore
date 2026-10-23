@@ -2,6 +2,7 @@
 node_modules/
 dist/
 .env
+!.env.example
 
 # Python
 __pycache__/
@@ -14,3 +15,6 @@ comply_ai.db
 
 # OS
 .DS_Store
+
+# Vercel
+.vercel/

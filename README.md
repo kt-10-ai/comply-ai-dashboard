@@ -310,7 +310,7 @@ This platform encodes logic derived from official RBI Master Directions, includi
 | Key | Value |
 |---|---|
 | `DATABASE_URL` | Internal PostgreSQL URL from Render DB |
-| `GEMINI_API_KEY` | Your OpenRouter or Google AI API key |
+| `OPENROUTER_API_KEY` | Your OpenRouter API key |
 
 ### Frontend (Vercel)
 
@@ -362,7 +362,7 @@ pip install -r requirements.txt
 Create a `.env` file in the root:
 ```env
 DATABASE_URL=postgresql://username:password@localhost:5432/comply_ai
-GEMINI_API_KEY=your_api_key_here
+OPENROUTER_API_KEY=your_openrouter_key_here
 ```
 
 Seed the database:
@@ -405,7 +405,7 @@ App available at: `http://localhost:5173`
 | Variable | Required | Description |
 |---|---|---|
 | `DATABASE_URL` | ✅ | Full PostgreSQL connection string |
-| `GEMINI_API_KEY` | ✅ | OpenRouter or Google AI API key for the chatbot |
+| `OPENROUTER_API_KEY` | ✅ | OpenRouter API key for the chatbot |
 
 ### Frontend (`frontend/.env`)
 

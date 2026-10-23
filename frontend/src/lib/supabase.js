@@ -7,4 +7,4 @@ if (!supabaseUrl || !supabaseKey) {
   console.error('[Comply.AI] Supabase credentials missing. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to frontend/.env')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+export const supabase = createClient(supabaseUrl || 'http://localhost:54321', supabaseKey || 'local-dev-placeholder')
