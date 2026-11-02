@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, Query
+from fastapi import FastAPI, Depends, Query, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -10,6 +10,7 @@ from datetime import date
 import json
 import os
 import chat
+from auth import require_user
 
 Base.metadata.create_all(bind=engine)
 
@@ -22,7 +23,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(chat.router)
+# Everything except the health check requires a verified, MFA-complete Supabase session.
+protected = APIRouter(dependencies=[Depends(require_user)])
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
 
@@ -43,7 +45,7 @@ def root():
 
 # ── NBFC Registry ──────────────────────────────────────────────────────────────
 
-@app.get("/nbfc/search")
+@protected.get("/nbfc/search")
 def search_nbfc(
     name: str = Query(None),
     classification: str = Query(None),
@@ -64,7 +66,7 @@ def search_nbfc(
     results = q.limit(limit).all()
     return [r.__dict__ for r in results]
 
-@app.get("/nbfc/stats")
+@protected.get("/nbfc/stats")
 def get_nbfc_stats(db: Session = Depends(get_db)):
     total = db.query(NBFC).count()
     layers = db.query(NBFC.layer, func.count(NBFC.layer)).group_by(NBFC.layer).all()
@@ -76,7 +78,7 @@ def get_nbfc_stats(db: Session = Depends(get_db)):
         "classifications": {k: v for k, v in classifications if k}
     }
 
-@app.get("/nbfc/{cin}")
+@protected.get("/nbfc/{cin}")
 def get_nbfc(cin: str, db: Session = Depends(get_db)):
     """
     Returns an NBFC's profile + its full compliance calendar.
@@ -109,7 +111,7 @@ def get_nbfc(cin: str, db: Session = Depends(get_db)):
 
 # ── Compliance Rules ───────────────────────────────────────────────────────────
 
-@app.get("/compliance/rules")
+@protected.get("/compliance/rules")
 def get_rules(classification: str = Query(None), layer: str = Query(None)):
     rules = COMPLIANCE_RULES
     if classification:
@@ -118,32 +120,27 @@ def get_rules(classification: str = Query(None), layer: str = Query(None)):
         rules = [r for r in rules if layer in r["applicable_layer"]]
     return rules
 
-@app.get("/compliance/portals")
+@protected.get("/compliance/portals")
 def get_portals():
     return RBI_PORTALS
 
 # ── Dashboard Stats ────────────────────────────────────────────────────────────
 
-@app.get("/compliance/stats")
+@protected.get("/compliance/stats")
 def get_stats(db: Session = Depends(get_db)):
-    total = db.query(NBFC).count()
-    by_classification = {}
-    by_layer = {}
-    by_office = {}
-    for row in db.query(NBFC).all():
-        by_classification[row.classification] = by_classification.get(row.classification, 0) + 1
-        by_layer[row.layer] = by_layer.get(row.layer, 0) + 1
-        by_office[row.regional_office] = by_office.get(row.regional_office, 0) + 1
+    # Aggregate in SQL rather than pulling all ~9k rows over the network.
+    def counts(col):
+        return dict(db.query(col, func.count()).group_by(col).all())
     return {
-        "total_nbfcs": total,
-        "by_classification": by_classification,
-        "by_layer": by_layer,
-        "by_regional_office": by_office
+        "total_nbfcs": db.query(NBFC).count(),
+        "by_classification": counts(NBFC.classification),
+        "by_layer": counts(NBFC.layer),
+        "by_regional_office": counts(NBFC.regional_office),
     }
 
 # ── Calendar overview — all upcoming deadlines from rules ─────────────────────
 
-@app.get("/compliance/calendar")
+@protected.get("/compliance/calendar")
 def get_calendar_overview(classification: str = Query(None), layer: str = Query(None)):
     """
     Returns all compliance deadlines computed from today's date.
@@ -167,3 +164,6 @@ def get_calendar_overview(classification: str = Query(None), layer: str = Query(
 
     results.sort(key=lambda x: (x["due_date"] or "9999-99-99"))
     return results
+
+protected.include_router(chat.router)
+app.include_router(protected)

@@ -4,8 +4,7 @@
 
 Instead of storing static, hardcoded due dates that quickly become obsolete, Comply.AI stores **regulatory logic** (e.g., *"15 days after quarter-end"*) and dynamically computes exact deadlines based on each NBFC's unique Classification, SBR Layer, and Deposit-taking status — recalculating every single time, from today's date.
 
-> **Live Demo:** [https://comply-ai-dashboard.vercel.app](https://comply-ai-dashboard.vercel.app)  
-> **Backend API:** [https://comply-ai.onrender.com](https://comply-ai.onrender.com)
+> **Hosting:** Vercel (frontend + API) · Supabase (Postgres + Auth with TOTP 2FA)
 
 ---
 
@@ -139,14 +138,14 @@ If either check fails, the rule is **silently skipped** — the NBFC never sees 
 |---|---|
 | **Frontend** | React 18, Vite, TailwindCSS, Recharts, Framer Motion |
 | **Routing** | React Router v7 |
-| **Auth** | Supabase Auth (`@supabase/supabase-js`) |
+| **Auth** | Supabase Auth + mandatory TOTP MFA |
 | **HTTP Client** | Axios |
 | **Backend** | Python 3.14, FastAPI, Uvicorn |
 | **ORM** | SQLAlchemy 2.0 |
-| **Database** | PostgreSQL (Render) |
+| **Database** | PostgreSQL (Supabase) |
 | **AI** | Google Gemini 2.5 Flash via OpenRouter (Function Calling) |
 | **Frontend Hosting** | Vercel |
-| **Backend Hosting** | Render (Web Service) |
+| **Backend Hosting** | Vercel Python serverless function |
 
 ---
 
@@ -198,7 +197,7 @@ Comply.AI/
 
 ## API Reference
 
-Base URL: `https://comply-ai.onrender.com`
+Base URL: `/backend` on the Vercel deployment (`http://localhost:8000` locally). All endpoints except `GET /` require an MFA-verified Supabase bearer token.
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -296,48 +295,34 @@ This platform encodes logic derived from official RBI Master Directions, includi
 
 ## Deployment Guide
 
-### Backend (Render Web Service)
+Everything runs on **Vercel** (React frontend + FastAPI as a Python serverless function under `/backend/*`) and **Supabase** (Postgres + Auth with mandatory TOTP two-factor).
 
-| Setting | Value |
-|---|---|
-| **Runtime** | Python |
-| **Root Directory** | *(blank)* |
-| **Build Command** | `pip install -r requirements.txt` |
-| **Start Command** | `cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT` |
+### 1. Supabase
+1. **SQL Editor** → run [`supabase/migrations/001_init.sql`](supabase/migrations/001_init.sql). It creates `nbfc_registry` (RLS on, not exposed to the public REST API) and `manual_filings` (RLS: own rows, MFA-verified sessions only).
+2. **Authentication → Multi-Factor** → make sure **TOTP (App Authenticator)** is enabled.
+3. **Authentication → URL Configuration** → set **Site URL** to your Vercel URL so confirmation emails link back to the app.
+4. Seed the registry from your machine using the **Session pooler** connection string (Connect → Session pooler, port 5432):
+   ```bash
+   DATABASE_URL="postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres" \
+     .venv/bin/python scripts/seed_db.py
+   ```
 
-**Environment Variables on Render:**
-
-| Key | Value |
-|---|---|
-| `DATABASE_URL` | Internal PostgreSQL URL from Render DB |
-| `GEMINI_API_KEY` | Your OpenRouter or Google AI API key |
-
-### Frontend (Vercel)
-
-| Setting | Value |
-|---|---|
-| **Framework** | Vite |
-| **Root Directory** | `frontend` |
-| **Build Command** | `npm run build` |
-| **Output Directory** | `dist` |
-
-**Environment Variables on Vercel:**
+### 2. Vercel
+Import the repo with **Root Directory left blank** (`vercel.json` handles the build). Set these environment variables:
 
 | Key | Value |
 |---|---|
-| `VITE_API_URL` | Your Render backend URL |
-| `VITE_SUPABASE_URL` | Your Supabase project URL |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anon/public key |
+| `VITE_SUPABASE_URL` | `https://<ref>.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon / publishable key |
+| `SUPABASE_URL` | Same as `VITE_SUPABASE_URL` (backend verifies tokens against its JWKS) |
+| `DATABASE_URL` | Supabase **Transaction pooler** string (port **6543**) |
+| `GEMINI_API_KEY` | OpenRouter API key for the chat assistant |
+| `SUPABASE_JWT_SECRET` | *Only* if your project still uses the legacy HS256 JWT secret |
 
-### Database Seeding
-
-After deploying, seed the cloud database once from your local machine:
-
-```bash
-DATABASE_URL="your-render-external-db-url" python scripts/seed_db.py
-```
-
-This will upload all 9,074 RBI-registered NBFCs into your production database.
+### Security model
+- Login = email/password **plus** a TOTP code from an authenticator app. First login forces enrollment (QR code).
+- Every API route except `GET /` requires `Authorization: Bearer <Supabase access token>` whose `aal` claim is `aal2` (second factor completed). Password-only sessions get `403`.
+- The backend refuses to start on Vercel without `SUPABASE_URL`; the frontend production build refuses to run without Supabase keys (the local login fallback is dev-server only).
 
 ---
 

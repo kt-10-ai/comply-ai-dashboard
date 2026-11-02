@@ -59,7 +59,7 @@ export default function AuthPage() {
   const [success, setSuccess]   = useState(false)
   const [serverError, setServerError] = useState('')
 
-  // Already logged in → go to dashboard
+  // Already logged in → dashboard (ProtectedRoute sends them to /auth/mfa if the second factor is pending)
   if (user) return <Navigate to="/" replace />
 
   const validate = () => {
