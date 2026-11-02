@@ -14,3 +14,5 @@ comply_ai.db
 
 # OS
 .DS_Store
+.vercel
+.env*

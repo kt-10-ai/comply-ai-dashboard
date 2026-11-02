@@ -10,8 +10,17 @@
       "maxDuration": 60
     }
   },
+  "regions": [
+    "hnd1"
+  ],
   "rewrites": [
-    { "source": "/backend/(.*)", "destination": "/api/index" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/backend/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
